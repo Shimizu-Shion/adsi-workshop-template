@@ -1,6 +1,7 @@
 package com.example.attendance.common;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         List<ErrorResponse.FieldError> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
             .map(e -> new ErrorResponse.FieldError(e.getField(), e.getDefaultMessage()))
+            .toList();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse.withFieldErrors("入力値に誤りがあります。", fieldErrors));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
+        List<ErrorResponse.FieldError> fieldErrors = ex.getConstraintViolations().stream()
+            .map(v -> new ErrorResponse.FieldError(v.getPropertyPath().toString(), v.getMessage()))
             .toList();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponse.withFieldErrors("入力値に誤りがあります。", fieldErrors));
