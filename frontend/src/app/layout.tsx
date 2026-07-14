@@ -45,6 +45,7 @@ export default function RootLayout({
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={false}
                   className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   {item.label}
