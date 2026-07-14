@@ -11,11 +11,11 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 class ArchitectureTest {
 
     @ArchTest
-    static final ArchRule entity_should_not_depend_on_service =
-        noClasses().that().resideInAnyPackage(
-            "..employee..", "..attendance..", "..leave..", "..calendar..", "..alert.."
-        ).and().haveSimpleNameEndingWith("Entity").or().areAnnotatedWith(jakarta.persistence.Entity.class)
-        .should().dependOnClassesThat().resideInAPackage("..config..");
+    static final ArchRule entity_should_not_depend_on_other_layers =
+        noClasses().that().areAnnotatedWith(jakarta.persistence.Entity.class)
+            .should().dependOnClassesThat().resideInAnyPackage(
+                "..config..", "..common.."
+            );
 
     @ArchTest
     static final ArchRule controller_should_not_access_repository_directly =

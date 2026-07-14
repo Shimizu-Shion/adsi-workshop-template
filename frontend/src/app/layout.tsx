@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -41,13 +42,13 @@ export default function RootLayout({
             <h1 className="text-lg font-bold text-gray-900">勤怠管理</h1>
             <nav className="flex gap-4">
               {NAV_ITEMS.map((item) => (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
                   className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
             </nav>
           </div>
