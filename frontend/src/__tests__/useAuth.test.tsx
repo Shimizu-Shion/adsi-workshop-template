@@ -1,6 +1,7 @@
 import { renderHook, waitFor, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useAuth } from '@/hooks/useAuth'
+import { AuthProvider, useAuthContext } from '@/components/AuthProvider'
+import type { ReactNode } from 'react'
 
 const mockApi = {
   get: vi.fn(),
@@ -27,7 +28,11 @@ vi.mock('@/lib/api-client', () => ({
   },
 }))
 
-describe('useAuth', () => {
+function wrapper({ children }: { children: ReactNode }) {
+  return <AuthProvider>{children}</AuthProvider>
+}
+
+describe('useAuthContext', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -35,7 +40,7 @@ describe('useAuth', () => {
   it('初期状態はisLoading: trueで/auth/meを呼ぶ', async () => {
     mockApi.get.mockRejectedValue(new Error('401'))
 
-    const { result } = renderHook(() => useAuth())
+    const { result } = renderHook(() => useAuthContext(), { wrapper })
 
     expect(result.current.isLoading).toBe(true)
 
@@ -49,7 +54,7 @@ describe('useAuth', () => {
     const employee = { id: 1, name: 'テスト', role: 'ADMIN' }
     mockApi.get.mockResolvedValue(employee)
 
-    const { result } = renderHook(() => useAuth())
+    const { result } = renderHook(() => useAuthContext(), { wrapper })
 
     await waitFor(() => {
       expect(result.current.isAuthenticated).toBe(true)
@@ -62,7 +67,7 @@ describe('useAuth', () => {
     const employee = { id: 1, name: 'テスト', role: 'ADMIN' }
     mockApi.post.mockResolvedValue({ employee })
 
-    const { result } = renderHook(() => useAuth())
+    const { result } = renderHook(() => useAuthContext(), { wrapper })
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false)
@@ -81,7 +86,7 @@ describe('useAuth', () => {
     mockApi.get.mockResolvedValue(employee)
     mockApi.post.mockResolvedValue(undefined)
 
-    const { result } = renderHook(() => useAuth())
+    const { result } = renderHook(() => useAuthContext(), { wrapper })
 
     await waitFor(() => {
       expect(result.current.isAuthenticated).toBe(true)

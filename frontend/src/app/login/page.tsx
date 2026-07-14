@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/Button'
@@ -12,8 +12,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { login } = useAuth()
+  const { login, isAuthenticated, isLoading } = useAuth()
   const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push('/')
+    }
+  }, [isLoading, isAuthenticated, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,8 +32,10 @@ export default function LoginPage() {
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
         setError('社員コードまたはパスワードが正しくありません')
+      } else if (err instanceof ApiError) {
+        setError(`API Error: ${err.status} - ${JSON.stringify(err.body)}`)
       } else {
-        setError('ログインに失敗しました')
+        setError(`エラー: ${err instanceof Error ? err.message : String(err)}`)
       }
     } finally {
       setIsSubmitting(false)
