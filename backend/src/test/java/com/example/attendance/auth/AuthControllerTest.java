@@ -1,6 +1,6 @@
 package com.example.attendance.auth;
 
-import com.example.attendance.employee.Department;
+import com.example.attendance.employee.DepartmentRepository;
 import com.example.attendance.employee.Employee;
 import com.example.attendance.employee.EmployeeRepository;
 import com.example.attendance.employee.Role;
@@ -38,12 +38,15 @@ class AuthControllerTest {
     private EmployeeRepository employeeRepository;
 
     @Autowired
+    private DepartmentRepository departmentRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() {
         employeeRepository.deleteAll();
-        var dept = Department.builder().id(1L).name("開発部").build();
+        var dept = departmentRepository.findById(1L).orElseThrow();
         var employee = Employee.builder()
                 .employeeCode("TEST001")
                 .name("テスト太郎")

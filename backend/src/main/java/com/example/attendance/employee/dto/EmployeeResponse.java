@@ -10,7 +10,8 @@ public record EmployeeResponse(
         String role,
         Long departmentId,
         String departmentName,
-        boolean active
+        boolean active,
+        Long version
 ) {
     public static EmployeeResponse from(Employee entity) {
         return new EmployeeResponse(
@@ -21,7 +22,8 @@ public record EmployeeResponse(
                 entity.getRole().name(),
                 entity.getDepartment() != null ? entity.getDepartment().getId() : null,
                 entity.getDepartment() != null ? entity.getDepartment().getName() : null,
-                entity.isActive()
+                entity.isActive(),
+                entity.getVersion()
         );
     }
 }

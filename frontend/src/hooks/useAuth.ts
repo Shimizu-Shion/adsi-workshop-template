@@ -37,8 +37,11 @@ export function useAuth() {
   }
 
   const logout = async () => {
-    await api.post('/auth/logout')
-    setState({ employee: null, isLoading: false, isAuthenticated: false })
+    try {
+      await api.post('/auth/logout')
+    } finally {
+      setState({ employee: null, isLoading: false, isAuthenticated: false })
+    }
   }
 
   return {

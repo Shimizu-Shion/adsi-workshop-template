@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Service
@@ -37,7 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         } else if (active != null) {
             employees = employeeRepository.findByActive(active);
         } else {
-            employees = employeeRepository.findAll();
+            employees = employeeRepository.findAllWithDepartment();
         }
         return employees.stream().map(EmployeeResponse::from).toList();
     }
@@ -82,6 +82,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         var employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("社員が見つかりません: id=" + id));
 
+        employeeRepository.findByEmail(request.email())
+                .filter(e -> !e.getId().equals(id))
+                .ifPresent(e -> {
+                    throw new IllegalArgumentException("メールアドレスが既に使用されています: " + request.email());
+                });
+
         employee.setVersion(request.version());
 
         var department = departmentRepository.findById(request.departmentId())
@@ -91,7 +97,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setEmail(request.email());
         employee.setRole(Role.valueOf(request.role()));
         employee.setDepartment(department);
-        employee.setUpdatedAt(LocalDateTime.now());
+
 
         var saved = employeeRepository.save(employee);
         return EmployeeResponse.from(saved);
@@ -103,7 +109,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         var employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("社員が見つかりません: id=" + id));
         employee.setActive(false);
-        employee.setUpdatedAt(LocalDateTime.now());
+
         employeeRepository.save(employee);
     }
 

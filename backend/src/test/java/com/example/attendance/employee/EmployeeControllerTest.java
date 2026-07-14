@@ -41,7 +41,7 @@ class EmployeeControllerTest {
     private EmployeeService employeeService;
 
     private final EmployeeResponse sampleResponse = new EmployeeResponse(
-            1L, "EMP001", "田中太郎", "tanaka@example.com", "EMPLOYEE", 1L, "開発部", true);
+            1L, "EMP001", "田中太郎", "tanaka@example.com", "EMPLOYEE", 1L, "開発部", true, 0L);
 
     @Test
     @DisplayName("GET /employees: 未認証で401")

@@ -10,6 +10,7 @@ export interface EmployeeResponse {
   departmentId: number
   departmentName: string
   active: boolean
+  version: number
 }
 
 export interface LoginRequest {

@@ -59,7 +59,7 @@ class EmployeeServiceImplTest {
     @Test
     @DisplayName("一覧取得: フィルタなし")
     void findAll_noFilter_returnsAll() {
-        when(employeeRepository.findAll()).thenReturn(List.of(employee));
+        when(employeeRepository.findAllWithDepartment()).thenReturn(List.of(employee));
 
         var result = service.findAll(null, null);
 

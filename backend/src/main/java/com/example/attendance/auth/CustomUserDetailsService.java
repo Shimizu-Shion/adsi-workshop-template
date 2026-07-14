@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String employeeCode) throws UsernameNotFoundException {
         var employee = employeeRepository.findByEmployeeCode(employeeCode)
                 .filter(e -> e.isActive())
-                .orElseThrow(() -> new UsernameNotFoundException("社員が見つかりません: " + employeeCode));
+                .orElseThrow(() -> new UsernameNotFoundException("認証に失敗しました"));
 
         return new User(
                 employee.getEmployeeCode(),

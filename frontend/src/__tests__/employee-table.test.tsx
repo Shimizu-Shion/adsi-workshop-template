@@ -13,6 +13,7 @@ const mockEmployees: EmployeeResponse[] = [
     departmentId: 1,
     departmentName: '開発部',
     active: true,
+    version: 0,
   },
   {
     id: 2,
@@ -23,6 +24,7 @@ const mockEmployees: EmployeeResponse[] = [
     departmentId: 2,
     departmentName: '営業部',
     active: false,
+    version: 1,
   },
 ]
 
