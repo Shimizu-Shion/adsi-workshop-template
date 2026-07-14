@@ -44,25 +44,25 @@ class EmployeeControllerTest {
             1L, "EMP001", "田中太郎", "tanaka@example.com", "EMPLOYEE", 1L, "開発部", true);
 
     @Test
-    @DisplayName("GET /api/employees: 未認証で401")
+    @DisplayName("GET /employees: 未認証で401")
     void findAll_unauthenticated_returns401() throws Exception {
-        mockMvc.perform(get("/api/employees"))
+        mockMvc.perform(get("/employees"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @DisplayName("GET /api/employees: 認証済みで200")
+    @DisplayName("GET /employees: 認証済みで200")
     @WithMockUser(roles = "EMPLOYEE")
     void findAll_authenticated_returns200() throws Exception {
         when(employeeService.findAll(null, null)).thenReturn(List.of(sampleResponse));
 
-        mockMvc.perform(get("/api/employees"))
+        mockMvc.perform(get("/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].employeeCode").value("EMP001"));
     }
 
     @Test
-    @DisplayName("POST /api/employees: ADMINで201")
+    @DisplayName("POST /employees: ADMINで201")
     @WithMockUser(roles = "ADMIN")
     void create_admin_returns201() throws Exception {
         when(employeeService.create(any())).thenReturn(sampleResponse);
@@ -78,7 +78,7 @@ class EmployeeControllerTest {
                 }
                 """;
 
-        mockMvc.perform(post("/api/employees")
+        mockMvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isCreated())
@@ -86,7 +86,7 @@ class EmployeeControllerTest {
     }
 
     @Test
-    @DisplayName("POST /api/employees: EMPLOYEEで403")
+    @DisplayName("POST /employees: EMPLOYEEで403")
     @WithMockUser(roles = "EMPLOYEE")
     void create_employee_returns403() throws Exception {
         var body = """
@@ -100,14 +100,14 @@ class EmployeeControllerTest {
                 }
                 """;
 
-        mockMvc.perform(post("/api/employees")
+        mockMvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    @DisplayName("PUT /api/employees/{id}: ADMINで200")
+    @DisplayName("PUT /employees/{id}: ADMINで200")
     @WithMockUser(roles = "ADMIN")
     void update_admin_returns200() throws Exception {
         when(employeeService.update(eq(1L), any())).thenReturn(sampleResponse);
@@ -122,27 +122,27 @@ class EmployeeControllerTest {
                 }
                 """;
 
-        mockMvc.perform(put("/api/employees/1")
+        mockMvc.perform(put("/employees/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("DELETE /api/employees/{id}: ADMINで204")
+    @DisplayName("DELETE /employees/{id}: ADMINで204")
     @WithMockUser(roles = "ADMIN")
     void deactivate_admin_returns204() throws Exception {
         doNothing().when(employeeService).deactivate(1L);
 
-        mockMvc.perform(delete("/api/employees/1"))
+        mockMvc.perform(delete("/employees/1"))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    @DisplayName("DELETE /api/employees/{id}: MANAGERで403")
+    @DisplayName("DELETE /employees/{id}: MANAGERで403")
     @WithMockUser(roles = "MANAGER")
     void deactivate_manager_returns403() throws Exception {
-        mockMvc.perform(delete("/api/employees/1"))
+        mockMvc.perform(delete("/employees/1"))
                 .andExpect(status().isForbidden());
     }
 }

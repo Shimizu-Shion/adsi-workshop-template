@@ -21,13 +21,12 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login").permitAll()
-                .requestMatchers("/api/health").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/employees").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/employees/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll()
+                .requestMatchers("/auth/login").permitAll()
+                .requestMatchers("/health").permitAll()
+                .requestMatchers(HttpMethod.POST, "/employees").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/employees/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/employees/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint((request, response, authException) ->

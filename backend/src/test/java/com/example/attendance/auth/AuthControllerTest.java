@@ -63,7 +63,7 @@ class AuthControllerTest {
                 {"employeeCode": "TEST001", "password": "password123"}
                 """;
 
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isOk())
@@ -78,7 +78,7 @@ class AuthControllerTest {
                 {"employeeCode": "TEST001", "password": "wrongpassword"}
                 """;
 
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isUnauthorized());
@@ -91,32 +91,32 @@ class AuthControllerTest {
                 {"employeeCode": "NONEXIST", "password": "password123"}
                 """;
 
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @DisplayName("/api/auth/me: 未認証で401")
+    @DisplayName("/auth/me: 未認証で401")
     void me_unauthenticated_returns401() throws Exception {
-        mockMvc.perform(get("/api/auth/me"))
+        mockMvc.perform(get("/auth/me"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @DisplayName("/api/auth/me: 認証済みで社員情報が返る")
+    @DisplayName("/auth/me: 認証済みで社員情報が返る")
     void me_authenticated_returnsEmployeeInfo() throws Exception {
         var loginBody = """
                 {"employeeCode": "TEST001", "password": "password123"}
                 """;
 
-        var session = mockMvc.perform(post("/api/auth/login")
+        var session = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginBody))
                 .andReturn().getRequest().getSession();
 
-        mockMvc.perform(get("/api/auth/me").session((org.springframework.mock.web.MockHttpSession) session))
+        mockMvc.perform(get("/auth/me").session((org.springframework.mock.web.MockHttpSession) session))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.employeeCode").value("TEST001"));
     }
@@ -128,12 +128,12 @@ class AuthControllerTest {
                 {"employeeCode": "TEST001", "password": "password123"}
                 """;
 
-        var session = mockMvc.perform(post("/api/auth/login")
+        var session = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginBody))
                 .andReturn().getRequest().getSession();
 
-        mockMvc.perform(post("/api/auth/logout").session((org.springframework.mock.web.MockHttpSession) session))
+        mockMvc.perform(post("/auth/logout").session((org.springframework.mock.web.MockHttpSession) session))
                 .andExpect(status().isNoContent());
     }
 }
